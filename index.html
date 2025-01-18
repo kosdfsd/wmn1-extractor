@@ -218,16 +218,31 @@
 
         // List of valid TLDs
         const validTLDs = new Set([
-            'com', 'net', 'org', 'edu', 'gov', 'mil', 'int',
-            'info', 'biz', 'name', 'pro', 'museum', 'coop',
-            'aero', 'xxx', 'idv', 'mobi', 'asia', 'tel',
-            'pub', 'ai', 'app', 'dev', 'io', 'co', 'me',
-            'tv', 'xyz', 'uk', 'de', 'fr', 'jp', 'cn',
-            'au', 'nz', 'ca', 'us', 'ru', 'ch', 'it',
-            'nl', 'se', 'no', 'es', 'mil', 'edu', 'gov',
-            'tech', 'online', 'store', 'shop', 'cloud',
-            'site', 'web', 'blog', 'news', 'art', 'design','cl','in'
-        ]);
+    'com', 'net', 'org', 'edu', 'gov', 'mil', 'int',
+    'info', 'biz', 'name', 'pro', 'museum', 'coop',
+    'aero', 'xxx', 'idv', 'mobi', 'asia', 'tel',
+    'pub', 'ai', 'app', 'dev', 'io', 'co', 'me',
+    'tv', 'xyz', 'uk', 'de', 'fr', 'jp', 'cn',
+    'au', 'nz', 'ca', 'us', 'ru', 'ch', 'it',
+    'nl', 'se', 'no', 'es', 'mil', 'edu', 'gov',
+    'tech', 'online', 'store', 'shop', 'cloud',
+    'site', 'web', 'blog', 'news', 'art', 'design',
+    'cl', 'in', 'ph', 'pk', 'za', 'sg', 'my', 'th',
+    'hk', 'kr', 'vn', 'br', 'ar', 'mx', 'tr', 'sa',
+    'ae', 'is', 'dk', 'pl', 'fi', 'gr', 'pt', 'cz',
+    'sk', 'ro', 'bg', 'hu', 'lv', 'lt', 'ee', 'be',
+    'at', 'lu', 'ie', 'rs', 'hr', 'si', 'ba', 'mk',
+    'al', 'by', 'kz', 'uz', 'az', 'ge', 'am', 'il',
+    'eg', 'ng', 'ke', 'gh', 'tn', 'ma', 'dz', 'ly',
+    'om', 'qa', 'bh', 'kw', 'jo', 'lb', 'sy', 'iq',
+    'ye', 'af', 'np', 'bt', 'mv', 'lk', 'bd', 'mm',
+    'kh', 'la', 'mn', 'pw', 'fm', 'ws', 'to', 'sb',
+    'pg', 'vu', 'ck', 'nc', 'pf', 'fj', 'tk', 'as',
+    'gu', 'mp', 'vi', 'pr', 'tt', 'jm', 'bz', 'cr',
+    'pa', 'hn', 'gt', 'sv', 'ni', 'bo', 'py', 'uy',
+    'pe', 'ec', 've', 'co', 'cl', 'do', 'cu', 'ht'
+]);
+
 
         function isValidDomain(domain) {
             domain = domain.split('/')[0];
