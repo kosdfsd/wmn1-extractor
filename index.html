@@ -8,10 +8,16 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f9;
+            color: #333;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: #f4f4f9;
         }
         .container {
             background-color: #ffffff;
@@ -22,10 +28,14 @@
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode .container {
+            background-color: #1e1e1e;
         }
         h1 {
             text-align: center;
-            color: #333333;
+            color: inherit;
             margin-bottom: 20px;
         }
         .input-container, .result-container {
@@ -42,13 +52,21 @@
             resize: vertical;
             box-sizing: border-box;
             font-family: monospace;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode textarea {
+            background-color: #2b2b2b;
+            color: #f4f4f9;
+            border-color: #444;
         }
         .button {
             padding: 12px;
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 1rem;
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
@@ -73,8 +91,6 @@
         }
         .result textarea {
             height: 150px;
-            background-color: #f9f9f9;
-            border-color: #eeeeee;
         }
         .button-group {
             display: grid;
@@ -96,6 +112,9 @@
             margin-top: 5px;
             text-align: right;
         }
+        body.dark-mode .counter {
+            color: #aaa;
+        }
         .toast {
             position: fixed;
             bottom: 20px;
@@ -112,13 +131,60 @@
         .toast.show {
             opacity: 1;
         }
+        .dark-mode-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .dark-mode-toggle label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .dark-mode-toggle input {
+            width: 40px;
+            height: 20px;
+            background: #ddd;
+            border-radius: 20px;
+            position: relative;
+            appearance: none;
+            outline: none;
+            transition: background 0.3s;
+        }
+        .dark-mode-toggle input:checked {
+            background: #007BFF;
+        }
+        .dark-mode-toggle input::after {
+            content: '';
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            transition: left 0.3s;
+        }
+        .dark-mode-toggle input:checked::after {
+            left: 21px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>WMN1</h1>
         <h1>Extraction de domaines et adresses IP</h1>
-        
+
+        <div class="dark-mode-toggle">
+            <label>
+                <input type="checkbox" id="darkModeSwitcher" onclick="toggleDarkMode()">
+                DarkMode
+            </label>
+        </div>
+
         <div class="input-container">
             <textarea id="texte" placeholder="Collez le texte ici..."></textarea>
             <div class="action-buttons">
@@ -145,6 +211,11 @@
     <div id="toast" class="toast">Copié avec succès!</div>
 
     <script>
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         // List of valid TLDs
         const validTLDs = new Set([
             'com', 'net', 'org', 'edu', 'gov', 'mil', 'int',
