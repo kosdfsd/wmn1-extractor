@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extraction de domaines et adresses IP</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #f4f4f9;
+    }
+
+    .container {
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode .container {
+      background-color: #1e1e1e;
+    }
+
+    h1 {
+      text-align: center;
+      color: inherit;
+      margin-bottom: 20px;
+    }
+
+    .input-container,
+    .result-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+      font-family: monospace;
+      background-color: #f9f9f9;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode textarea {
+      background-color: #2b2b2b;
+      color: #f4f4f9;
+      border-color: #444;
+    }
+
+    .button {
+      padding: 12px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+    }
+
+    .button.secondary {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1rem;
+      background-color: #ca0c0c;
+    }
+
+    .button svg {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
+    .button.secondary:hover {
+      background-color: #545b62;
+    }
+
+    .button.success {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1rem;
+      background-color: #28a745;
+    }
+
+    .button.success:hover {
+      background-color: #218838;
+    }
+
+    .result {
+      margin-top: 20px;
+    }
+
+    .result textarea {
+      height: 150px;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .action-buttons button {
+      flex: 1;
+    }
+
+    .counter {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    body.dark-mode .counter {
+      color: #aaa;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .dark-mode-toggle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dark-mode-toggle label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .dark-mode-toggle input {
+      width: 40px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 20px;
+      position: relative;
+      appearance: none;
+      outline: none;
+      transition: background 0.3s;
+    }
+
+    .dark-mode-toggle input:checked {
+      background: #007BFF;
+    }
+
+    .dark-mode-toggle input::after {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      transition: left 0.3s;
+    }
+
+    .hide {
+      opacity: .5;
+    }
+
+    .dark-mode-toggle input:checked::after {
+      left: 21px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>WMN1</h1>
+    <h1>Extraction de domaines et adresses IP</h1>
+
+    <div class="dark-mode-toggle">
+      <label>
+        <input type="checkbox" id="darkModeSwitcher" onclick="toggleDarkMode()">
+        DarkMode
+      </label>
+    </div>
+
+    <div class="input-container">
+      <textarea id="texte" placeholder="Collez le texte ici..."></textarea>
+      <div class="action-buttons">
+        <button class="button secondary" onclick="clearInput()"><svg width="800px" height="800px" viewBox="0 0 24 24"
+            fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.5001 6H3.5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M9.5 11L10 16" stroke="#000000" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M14.5 11L14 16" stroke="#000000" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
+              stroke="#000000" stroke-width="1.5" />
+            <path
+              d="M18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5M18.8334 8.5L18.6334 11.5"
+              stroke="#000000" stroke-width="1.5" stroke-linecap="round" />
+          </svg></button>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="button" id="exDom" onclick="extraireDomaines()">Extraire les domaines</button>
+      <button class="button" id="exIP" onclick="extraireIP()">Extraire les adresses IP</button>
+    </div>
+
+    <div class="result-container">
+      <textarea id="resultat" readonly></textarea>
+      <div class="counter" id="counter"></div>
+      <div class="action-buttons">
+        <button class="button success" onclick="copyOutput()"><svg width="800px" height="800px" viewBox="0 0 24 24"
+            fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M21 8C21 6.34315 19.6569 5 18 5H10C8.34315 5 7 6.34315 7 8V20C7 21.6569 8.34315 23 10 23H18C19.6569 23 21 21.6569 21 20V8ZM19 8C19 7.44772 18.5523 7 18 7H10C9.44772 7 9 7.44772 9 8V20C9 20.5523 9.44772 21 10 21H18C18.5523 21 19 20.5523 19 20V8Z"
+              fill="#0F0F0F" />
+            <path
+              d="M6 3H16C16.5523 3 17 2.55228 17 2C17 1.44772 16.5523 1 16 1H6C4.34315 1 3 2.34315 3 4V18C3 18.5523 3.44772 19 4 19C4.55228 19 5 18.5523 5 18V4C5 3.44772 5.44772 3 6 3Z"
+              fill="#0F0F0F" />
+          </svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copié avec succès!</div>
+
+  <script>
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function focusInput() {
+      const input = document.getElementById('texte');
+      input.focus();
+    }
+
+    // List of valid TLDs
+    const validTLDs = new Set([
+      'com', 'net', 'org', 'edu', 'gov', 'mil', 'int',
+      'info', 'biz', 'name', 'pro', 'museum', 'coop',
+      'aero', 'xxx', 'idv', 'mobi', 'asia', 'tel',
+      'pub', 'ai', 'app', 'dev', 'io', 'co', 'me',
+      'tv', 'xyz', 'uk', 'de', 'fr', 'jp', 'cn',
+      'au', 'nz', 'ca', 'us', 'ru', 'ch', 'it',
+      'nl', 'se', 'no', 'es', 'mil', 'edu', 'gov',
+      'tech', 'online', 'store', 'shop', 'cloud',
+      'site', 'web', 'blog', 'news', 'art', 'design',
+      'cl', 'in', 'ph', 'pk', 'za', 'sg', 'my', 'th',
+      'hk', 'kr', 'vn', 'br', 'ar', 'mx', 'tr', 'sa',
+      'ae', 'is', 'dk', 'pl', 'fi', 'gr', 'pt', 'cz',
+      'sk', 'ro', 'bg', 'hu', 'lv', 'lt', 'ee', 'be',
+      'at', 'lu', 'ie', 'rs', 'hr', 'si', 'ba', 'mk',
+      'al', 'by', 'kz', 'uz', 'az', 'ge', 'am', 'il',
+      'eg', 'ng', 'ke', 'gh', 'tn', 'ma', 'dz', 'ly',
+      'om', 'qa', 'bh', 'kw', 'jo', 'lb', 'sy', 'iq',
+      'ye', 'af', 'np', 'bt', 'mv', 'lk', 'bd', 'mm',
+      'kh', 'la', 'mn', 'pw', 'fm', 'ws', 'to', 'sb',
+      'pg', 'vu', 'ck', 'nc', 'pf', 'fj', 'tk', 'as',
+      'gu', 'mp', 'vi', 'pr', 'tt', 'jm', 'bz', 'cr',
+      'pa', 'hn', 'gt', 'sv', 'ni', 'bo', 'py', 'uy',
+      'pe', 'ec', 've', 'co', 'cl', 'do', 'cu', 'ht'
+    ]);
+
+    function isValidDomain(domain) {
+      domain = domain.split('/')[0];
+      if (!/^[a-zA-Z0-9][a-zA-Z0-9-_.]+\.[a-zA-Z]{2,}$/.test(domain)) {
+        return false;
+      }
+      const tld = domain.split('.').pop().toLowerCase();
+      if (!validTLDs.has(tld)) {
+        return false;
+      }
+      const parts = domain.split('.');
+      for (const part of parts) {
+        if (!/^[a-zA-Z0-9].*[a-zA-Z0-9]$/.test(part)) {
+          return false;
+        }
+        if (part.includes('--') || part.includes('..')) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function isValidIP(ip) {
+      const parts = ip.split('.');
+      if (parts.length !== 4) return false;
+      return parts.every(part => {
+        const num = parseInt(part, 10);
+        return num >= 0 && num <= 255 && part === num.toString();
+      });
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast();
+      } catch (err) {
+        console.error('Failed to copy text:', err);
+      }
+    }
+
+    function copyInput() {
+      const text = document.getElementById('texte').value;
+      copyToClipboard(text);
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('resultat').value;
+      copyToClipboard(text);
+    }
+
+    function clearInput() {
+      document.getElementById('texte').value = '';
+      updateCounter(0);
+      focusInput();
+    }
+
+    function clearOutput() {
+      document.getElementById('resultat').value = '';
+      updateCounter(0);
+    }
+
+    function updateCounter(count) {
+      const counter = document.getElementById('counter');
+      counter.textContent = count > 0 ? `${count} résultat${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}` : '';
+    }
+
+    function extraireDomaines() {
+      const texte = document.getElementById('texte').value;
+      const exIP = document.getElementById('exIP');
+      const exDom = document.getElementById('exDom');
+      exIP.classList.add('hide');
+      exDom.classList.remove('hide');
+
+
+      const pattern = /(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][a-zA-Z0-9-_.]+\.[a-zA-Z]{2,})/gi;
+      const matches = Array.from(texte.matchAll(pattern), m => m[1]);
+      const domaines = matches
+        .filter(isValidDomain)
+        .filter((domain, index, self) => self.indexOf(domain) === index)
+        .sort();
+
+      const resultatArea = document.getElementById('resultat');
+      resultatArea.value = domaines.length > 0
+        ? domaines.join('\n')
+        : 'Aucun domaine trouvé.';
+      updateCounter(domaines.length);
+    }
+
+    function extraireIP() {
+      const exIP = document.getElementById('exIP');
+      const exDom = document.getElementById('exDom');
+      exDom.classList.add('hide');
+      exIP.classList.remove('hide');
+
+
+      const texte = document.getElementById('texte').value;
+      const pattern = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g;
+      const matches = texte.match(pattern) || [];
+      const adressesIP = matches
+        .filter(isValidIP)
+        .filter((ip, index, self) => self.indexOf(ip) === index)
+        .sort();
+
+      const resultatArea = document.getElementById('resultat');
+      resultatArea.value = adressesIP.length > 0
+        ? adressesIP.join('\n')
+        : 'Aucune adresse IP trouvée.';
+      updateCounter(adressesIP.length);
+    }
+  </script>
+</body>
+
+</html>
