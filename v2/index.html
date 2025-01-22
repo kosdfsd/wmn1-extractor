@@ -420,21 +420,23 @@
       const exDom = document.getElementById('exDom');
       exDom.classList.add('hide');
       exIP.classList.remove('hide');
-
-
       const texte = document.getElementById('texte').value;
-      const pattern = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g;
-      const matches = texte.match(pattern) || [];
-      const adressesIP = matches
-        .filter(isValidIP)
-        .filter((ip, index, self) => self.indexOf(ip) === index)
-        .sort();
 
-      const resultatArea = document.getElementById('resultat');
-      resultatArea.value = adressesIP.length > 0
-        ? adressesIP.join('\n')
-        : 'Aucune adresse IP trouvée.';
-      updateCounter(adressesIP.length);
+// Remove prefixes or unwanted characters before checking for valid IPs
+const cleanedText = texte.replace(/[^0-9.\n]/g, ' '); // Replace non-IP characters with spaces
+
+const pattern = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g;
+const matches = Array.from(cleanedText.matchAll(pattern), m => m[0]);
+const ips = matches
+  .filter(isValidIP)
+  .filter((ip, index, self) => self.indexOf(ip) === index)
+  .sort();
+
+const resultatArea = document.getElementById('resultat');
+resultatArea.value = ips.length > 0
+  ? ips.join('\n')
+  : 'Aucune adresse IP trouvée.';
+updateCounter(ips.length);
     }
   </script>
 </body>
