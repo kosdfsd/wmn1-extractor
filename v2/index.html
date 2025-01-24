@@ -394,6 +394,8 @@
     }
 
     function extraireDomaines() {
+      const res = document.getElementById('resultat');
+      res.focus();
       const texte = document.getElementById('texte').value;
       const exIP = document.getElementById('exIP');
       const exDom = document.getElementById('exDom');
@@ -416,6 +418,8 @@
     }
 
     function extraireIP() {
+      const res = document.getElementById('resultat');
+      res.focus();
       const exIP = document.getElementById('exIP');
       const exDom = document.getElementById('exDom');
       exDom.classList.add('hide');
