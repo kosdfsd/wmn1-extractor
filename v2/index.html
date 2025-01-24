@@ -394,9 +394,6 @@
     }
 
     function extraireDomaines() {
-      const res = document.getElementById('resultat');
-      res.focus();
-      res.select();
       const texte = document.getElementById('texte').value;
       const exIP = document.getElementById('exIP');
       const exDom = document.getElementById('exDom');
@@ -416,12 +413,12 @@
         ? domaines.join('\n')
         : 'Aucun domaine trouvé.';
       updateCounter(domaines.length);
-    }
-
-    function extraireIP() {
       const res = document.getElementById('resultat');
       res.focus();
       res.select();
+    }
+
+    function extraireIP() {
       const exIP = document.getElementById('exIP');
       const exDom = document.getElementById('exDom');
       exDom.classList.add('hide');
@@ -444,6 +441,9 @@ resultatArea.value = ips.length > 0
   : 'Aucune adresse IP trouvée.';
 updateCounter(ips.length);
     }
+    const res = document.getElementById('resultat');
+      res.focus();
+      res.select();
   </script>
 </body>
 
