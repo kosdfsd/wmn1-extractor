@@ -123,9 +123,9 @@
     }
 
     .button-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
       margin: 10px 0;
     }
 
@@ -261,6 +261,7 @@
     <div class="button-group">
       <button class="button" id="exDom" onclick="extraireDomaines()">Extraire les domaines</button>
       <button class="button" id="exIP" onclick="extraireIP()">Extraire les adresses IP</button>
+      <button onclick="extractServers()">Extract Servers</button>
     </div>
 
     <div class="result-container">
